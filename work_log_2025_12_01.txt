@@ -1,0 +1,33 @@
+2025年12月1日 作業ログ
+
+■ 実施した作業内容
+
+1. SteamVR初期化エラーの解決
+   - XR Plugin Managementの設定でOpenVR Loaderを有効化
+   - SteamVR Inputのactions.json生成とバインディング設定
+
+2. 実行時エラーの修正
+   - 重複するAudio ListenerとEvent Systemの削除
+   - SteamVR Inputの再生成によるIPCErrorの解消
+
+3. 米生成機能（RiceContainer）の実装
+   - コントローラー入力（Trigger/Grip）の検知ロジック修正
+   - Updateループによる確実な入力監視の実装
+   - お釜を持たずに米を直接生成して手に持たせる方式への変更
+
+4. 寿司生成ロジック（GrabbableRice / GrabbableFish）の修正
+   - 米と魚が合体して消える際のエラー（Cannot set parent...）の修正
+   - 「Hide and Die」戦略（見た目を消してからデタッチ・破棄する）の導入
+   - 物理衝突に頼らない強制合体ロジック（OverlapSphere）の実装
+   - 合体時のNaNエラー回避（Throwable無効化）
+
+5. 魚ネタ生成機能（FishSource）の実装
+   - RiceContainerと同様のロジックを適用
+
+6. 寿司投げ機能（SushiThrowable）の修正
+   - 速度計算ロジック（VelocityEstimator）の追加
+   - タグ（Customer）設定の案内
+
+■ 現在の状況
+- 寿司の生成、合体、投げる動作まで一通り動作するようになった。
+- 合体時に寿司が手に吸い付かず、その場に落ちる現象の微調整中。
