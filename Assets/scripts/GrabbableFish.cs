@@ -24,6 +24,10 @@ public class GrabbableFish : MonoBehaviour
     [Tooltip("通常時の色")]
     public Color normalColor = Color.white;
 
+    [Header("Audio")]
+    [Tooltip("掴んだときの効果音")]
+    public AudioClip heldSound;
+
     private Interactable interactable;
     private Rigidbody rb;
     private bool isHeldByHand = false;
@@ -75,6 +79,12 @@ public class GrabbableFish : MonoBehaviour
         isHeldByHand = true;
         currentHand = hand;
         Debug.Log($"{fishType}が{hand.name}に掴まれました");
+
+        // 音を再生
+        if (heldSound != null)
+        {
+            AudioSource.PlayClipAtPoint(heldSound, transform.position);
+        }
 
         // 色を変更（視覚的フィードバック）
         SetColor(heldColor);
