@@ -70,9 +70,12 @@ public class CustomerSpawner : MonoBehaviour
     /// </summary>
     private SeatPoint GetFreeSeat()
     {
+        if (seats == null) return null;
+
         foreach (var seat in seats)
         {
-            if (!seat.isOccupied)
+            // seat自体がnull（未設定など）の場合はスキップ
+            if (seat != null && !seat.isOccupied)
             {
                 return seat;
             }

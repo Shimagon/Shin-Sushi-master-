@@ -236,4 +236,49 @@ public class Customer : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position + Vector3.up * 2f, 0.3f);
     }
+
+    /// <summary>
+    /// わさびをぶつけられたときの処理
+    /// </summary>
+    public void HitByWasabi()
+    {
+        Debug.Log($"{customerName}はわさび爆弾を受けました！退散します！");
+
+        // 既に寿司を受け取っている、あるいは退散中なら何もしない
+        if (hasReceivedSushi) return;
+
+        // 強制的に退散処理へ
+        // ここでは「不満」扱いで退散するか、専用のリアクションをするか
+        // 要望は「爆発するエフェクトでクレーマーを追い出す」
+
+        // UI非表示
+        if (requestCanvas != null)
+        {
+            requestCanvas.SetActive(false);
+        }
+
+        // 悲しみ（怒り）エフェクトなどを出す
+        if (sadEffect != null)
+        {
+            GameObject effect = Instantiate(sadEffect, transform.position + Vector3.up * 2f, Quaternion.identity);
+            Destroy(effect, 3f);
+        }
+
+        // 悲しみ（怒り）ボイス
+        if (sadSound != null)
+        {
+            AudioSource.PlayClipAtPoint(sadSound, transform.position);
+        }
+
+        // アニメーション（あれば）
+        if (animator != null && !string.IsNullOrEmpty(sadAnimationTrigger))
+        {
+            animator.SetTrigger(sadAnimationTrigger);
+        }
+
+        // 即座に消えるか、少し待って消えるか
+        // 爆発で吹き飛ぶ演出ならRigidbodyに力を加えるのもありだが、
+        // ここではシンプルにDisappearAfterDelayを呼ぶ（時間は短縮してもいいかも）
+        StartCoroutine(DisappearAfterDelay());
+    }
 }
