@@ -73,6 +73,38 @@ public class CustomerOrderWithTimer : MonoBehaviour
 
         // 残り時間UIの更新
         UpdateTimerUI();
+        // 残り時間UIの更新
+        UpdateTimerUI();
+    }
+
+    // =======================
+    // 🔗 外部アクセス用 (SushiThrowableから呼ぶ)
+    // =======================
+    
+    /// <summary>
+    /// その寿司を欲しがっているか判定
+    /// </summary>
+    public bool WantsSushi(string sushiType)
+    {
+        if (!isOrderActive) return false;
+        return currentRequestedSushi == sushiType;
+    }
+
+    /// <summary>
+    /// 寿司を受け取る（SushiThrowableから呼ばれる）
+    /// </summary>
+    public void ReceiveSushi(string sushiType, bool isCorrect)
+    {
+        if (!isOrderActive) return;
+
+        if (isCorrect)
+        {
+            OnReceiveCorrectSushi(null); // オブジェクト参照は必須ではないのでnull
+        }
+        else
+        {
+            OnReceiveWrongSushi(null);
+        }
     }
 
     // =======================
@@ -213,7 +245,8 @@ public class CustomerOrderWithTimer : MonoBehaviour
     // =======================
     void OnReceiveWrongSushi(GameObject sushiObj)
     {
-        Debug.Log($"[CustomerOrderWithTimer] 間違った寿司です（要求: {currentRequestedSushi} / 受取: {sushiObj.name}）");
+        string sushiName = sushiObj != null ? sushiObj.name : "Unknown";
+        Debug.Log($"[CustomerOrderWithTimer] 間違った寿司です（要求: {currentRequestedSushi} / 受取: {sushiName}）");
 
         // 間違いの場合は注文を維持するか、すぐ次の注文に切り替えるか好みで調整可能
         // 今は「間違っても注文を続ける」仕様

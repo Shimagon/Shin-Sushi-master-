@@ -6,6 +6,10 @@ using System.Collections;
 /// お客さんのクラス
 /// 特定の寿司を要求し、正しい寿司が来たら喜ぶ
 /// </summary>
+/// <summary>
+/// お客さんのクラス
+/// 特定の寿司を要求し、正しい寿司が来たら喜ぶ
+/// </summary>
 public class Customer : MonoBehaviour
 {
     [Header("Customer Settings")]

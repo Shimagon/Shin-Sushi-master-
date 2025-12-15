@@ -10,6 +10,8 @@ public class GameTimer : MonoBehaviour
     public TextMeshProUGUI timerText;
     public string resultSceneName = "PCResult";
 
+
+
     float currentTime;
     bool isFinished;
     int lastShownSec = -1;
@@ -18,7 +20,7 @@ public class GameTimer : MonoBehaviour
     {
         currentTime = timeLimit;
 
-        if (timerText != null) timerText.text = ""; // »§Ω√ ¥©¿˚µ≈ ¿÷¥¯ ∞≈ √ ±‚»≠
+        if (timerText != null) timerText.text = ""; 
         UpdateTimerUI(force: true);
     }
 
@@ -37,7 +39,7 @@ public class GameTimer : MonoBehaviour
             return;
         }
 
-        // √ ∞° πŸ≤ ∂ß∏∏ «•Ω√ ∞ªΩ≈
+        // Áßí„ÅåÂ§â„Çè„Å£„Åü„Å®„Åç„Å†„ÅëÊõ¥Êñ∞
         int sec = Mathf.CeilToInt(currentTime);
         if (sec != lastShownSec)
         {
@@ -53,7 +55,6 @@ public class GameTimer : MonoBehaviour
         int minutes = Mathf.FloorToInt(currentTime / 60f);
         int seconds = Mathf.FloorToInt(currentTime % 60f);
 
-        timerText.text = $"{minutes:00}:{seconds:00}"; // °⁄ π›µÂΩ√ '='
+        timerText.text = $"{minutes:00}:{seconds:00}";
     }
 }
-

@@ -16,9 +16,32 @@ public class CustomerSpawner : MonoBehaviour
     [Header("客の生成間隔（秒）")]
     public float spawnInterval = 20f;   // 20秒ごとに生成
 
+    [Header("Difficulty Settings")]
+    public float minSpawnInterval = 5f;
+    public float difficultyIncreaseInterval = 20f;
+    public float difficultyDecreaseAmount = 1f;
+
+    private float timer = 0f;
+
     private void Start()
     {
         StartCoroutine(SpawnLoop());
+    }
+
+    private void Update()
+    {
+        // 難易度調整：時間経過で生成間隔を短くする
+        timer += Time.deltaTime;
+        if (timer >= difficultyIncreaseInterval)
+        {
+            timer = 0f;
+            if (spawnInterval > minSpawnInterval)
+            {
+                spawnInterval -= difficultyDecreaseAmount;
+                if (spawnInterval < minSpawnInterval) spawnInterval = minSpawnInterval;
+                Debug.Log($"難易度アップ！生成間隔が {spawnInterval}秒 になりました");
+            }
+        }
     }
 
     /// <summary>

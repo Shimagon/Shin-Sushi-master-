@@ -31,6 +31,9 @@ public class SushiThrowable : MonoBehaviour
     [Tooltip("お客さんに当たったときの効果音")]
     public AudioClip hitSound;
 
+    [Tooltip("間違った寿司が当たったときのエフェクト")]
+    public GameObject wrongHitEffect;
+
     [Tooltip("投げたときの効果音")]
     public AudioClip throwSound;
 
@@ -156,11 +159,19 @@ public class SushiThrowable : MonoBehaviour
         GameObject hitObject = collision.gameObject;
 
         // お客さんに当たったかチェック
+        // お客さんに当たったかチェック
         Customer customer = hitObject.GetComponent<Customer>();
+        CustomerOrderWithTimer customerWithTimer = hitObject.GetComponent<CustomerOrderWithTimer>();
+
         if (customer != null)
         {
-            // お客さんに当たった！
+            // お客さんに当たった！(古いScript)
             OnHitCustomer(customer, collision.contacts[0].point);
+        }
+        else if (customerWithTimer != null)
+        {
+            // お客さんに当たった！(新しいScript)
+            OnHitCustomerWithTimer(customerWithTimer, collision.contacts[0].point);
         }
         else if (hitObject.CompareTag("Customer"))
         {
@@ -178,18 +189,62 @@ public class SushiThrowable : MonoBehaviour
 
         // お客さんが求めている寿司かチェック
         bool isCorrectSushi = customer.WantsSushi(sushiType);
-        int earnedPoints = isCorrectSushi ? pointValue : pointValue / 2;
+        
+        int earnedPoints = 0;
+        if (isCorrectSushi)
+        {
+            earnedPoints = pointValue;
+            Debug.Log($"お客さんに{sushiType}が当たった！正解！ {earnedPoints}点獲得！");
+        }
+        else
+        {
+            earnedPoints = -1; // 間違いはマイナス1点
+            Debug.Log($"お客さんに{sushiType}が当たった！間違い... {earnedPoints}点...");
+        }
 
         // スコアを追加
         ScoreManager.Instance?.AddScore(earnedPoints);
-
-        Debug.Log($"お客さんに{sushiType}が当たった！ {earnedPoints}点獲得！");
 
         // お客さんに通知
         customer.ReceiveSushi(sushiType, isCorrectSushi);
 
         // エフェクトと音を再生
-        PlayHitEffects(hitPoint);
+        PlayHitEffects(hitPoint, isCorrectSushi);
+
+        // 寿司を消す
+        Destroy(gameObject, 0.1f);
+    }
+
+    /// <summary>
+    /// お客さん（Timer付き）に当たったときの処理
+    /// </summary>
+    private void OnHitCustomerWithTimer(CustomerOrderWithTimer customer, Vector3 hitPoint)
+    {
+        hasHitTarget = true;
+
+        // お客さんが求めている寿司かチェック
+        bool isCorrectSushi = customer.WantsSushi(sushiType);
+        
+        int earnedPoints = 0;
+        if (isCorrectSushi)
+        {
+            earnedPoints = pointValue;
+            Debug.Log($"お客さん(Timer)に{sushiType}が当たった！正解！ {earnedPoints}点獲得！");
+        }
+        else
+        {
+            earnedPoints = -1; // 間違いはマイナス1点
+            Debug.Log($"お客さん(Timer)に{sushiType}が当たった！間違い... {earnedPoints}点...");
+        }
+
+        // スコアを追加
+        ScoreManager.Instance?.AddScore(earnedPoints);
+
+        // お客さんに通知
+        customer.ReceiveSushi(sushiType, isCorrectSushi);
+
+        // エフェクトと音を再生
+        PlayHitEffects(hitPoint, isCorrectSushi);
 
         // 寿司を消す
         Destroy(gameObject, 0.1f);
@@ -208,7 +263,7 @@ public class SushiThrowable : MonoBehaviour
         Debug.Log($"お客さんに{sushiType}が当たった！ {pointValue}点獲得！");
 
         // エフェクトと音を再生
-        PlayHitEffects(hitPoint);
+        PlayHitEffects(hitPoint, true);
 
         // 寿司を消す
         Destroy(gameObject, 0.1f);
@@ -217,13 +272,24 @@ public class SushiThrowable : MonoBehaviour
     /// <summary>
     /// ヒットエフェクトと音を再生
     /// </summary>
-    private void PlayHitEffects(Vector3 position)
+    private void PlayHitEffects(Vector3 position, bool isCorrect)
     {
         // エフェクト
-        if (hitEffect != null)
+        if (isCorrect)
         {
-            GameObject effect = Instantiate(hitEffect, position, Quaternion.identity);
-            Destroy(effect, 3f);
+            if (hitEffect != null)
+            {
+                GameObject effect = Instantiate(hitEffect, position, Quaternion.identity);
+                Destroy(effect, 3f);
+            }
+        }
+        else
+        {
+            if (wrongHitEffect != null)
+            {
+                GameObject effect = Instantiate(wrongHitEffect, position, Quaternion.identity);
+                Destroy(effect, 3f);
+            }
         }
 
         // 効果音

@@ -236,8 +236,9 @@ MonoBehaviour:
   pointValue: 100
   throwMultiplier: 1.5
   autoDestroyTime: 10
-  hitEffect: {fileID: 0}
+  hitEffect: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
   hitSound: {fileID: 0}
+  wrongHitEffect: {fileID: 6855314210357232287, guid: 7c2a9b83b809a0848915fabd9596b68b, type: 3}
   throwSound: {fileID: 0}
 --- !u!114 &4929195887723199966
 MonoBehaviour:
