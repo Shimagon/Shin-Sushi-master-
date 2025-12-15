@@ -101,6 +101,15 @@ public class CustomerSitting : MonoBehaviour
         {
             anim.SetBool("IsWalking", false);  // 歩きアニメーション停止
             anim.SetTrigger("Sit");            // 座るアニメーション再生
+            anim.SetBool("IsWalking", false);  // 歩きアニメーション停止
+            anim.SetTrigger("Sit");            // 座るアニメーション再生
+        }
+
+        // 席についたので注文を開始！
+        CustomerOrderWithTimer orderScript = GetComponent<CustomerOrderWithTimer>();
+        if (orderScript != null)
+        {
+            orderScript.ActivateOrder();
         }
     }
 

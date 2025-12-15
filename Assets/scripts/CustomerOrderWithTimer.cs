@@ -10,7 +10,7 @@ public class CustomerOrderWithTimer : MonoBehaviour
     public string[] possibleSushiTypes = { "Maguro", "Tamago", "Salmon" };
 
     [Tooltip("1回の注文ごとの制限時間（秒）")]
-    public float timeLimit = 15f;
+    public float timeLimit = 45f;
 
     [Tooltip("正解または時間切れ後、次の注文を出すまでの遅延時間（秒）")]
     public float nextOrderDelay = 1.0f;
@@ -38,11 +38,17 @@ public class CustomerOrderWithTimer : MonoBehaviour
     public Sprite tamagoSprite;
     public Sprite salmonSprite;
 
+    [Header("注文ボイス")]
+    public AudioClip maguroSound;
+    public AudioClip tamagoSound;
+    public AudioClip salmonSound;
+
     [Header("リアクション（任意）")]
     public GameObject correctEffect;
     public GameObject wrongEffect;
-    public AudioClip correctSound;
-    public AudioClip wrongSound;
+    public AudioClip[] correctSounds;
+    public AudioClip[] wrongSounds;
+    public AudioClip[] timeoutSounds; // 時間切れ用の音リスト
     public Animator animator;
     public string correctTrigger = "Happy";
     public string wrongTrigger = "Sad";
@@ -53,8 +59,18 @@ public class CustomerOrderWithTimer : MonoBehaviour
         if (orderCanvas != null)
             orderCanvas.SetActive(false);
 
-        // ゲーム開始時に最初の注文を生成
-        StartNewOrder();
+        // ※変更点: ゲーム開始時には注文せず、席についてから ActivateOrder() で開始する
+    }
+
+    /// <summary>
+    /// 注文を開始する（CustomerSittingから呼ばれる）
+    /// </summary>
+    public void ActivateOrder()
+    {
+        if (!isOrderActive) // すでに始まっていなければ開始
+        {
+            StartNewOrder();
+        }
     }
 
     void Update()
@@ -139,7 +155,37 @@ public class CustomerOrderWithTimer : MonoBehaviour
 
         UpdateTimerUI();
 
+        UpdateTimerUI();
+
+        // 🔹注文ボイス再生
+        PlayOrderSound(currentRequestedSushi);
+
         Debug.Log($"[CustomerOrderWithTimer] 新しい注文: {currentRequestedSushi}（制限時間: {timeLimit} 秒）");
+    }
+
+    // =======================
+    // 🔊 注文ボイス再生
+    // =======================
+    void PlayOrderSound(string sushiType)
+    {
+        AudioClip clip = null;
+        switch (sushiType)
+        {
+            case "Maguro":
+                clip = maguroSound;
+                break;
+            case "Tamago":
+                clip = tamagoSound;
+                break;
+            case "Salmon":
+                clip = salmonSound;
+                break;
+        }
+
+        if (clip != null)
+        {
+            AudioSource.PlayClipAtPoint(clip, transform.position);
+        }
     }
 
     // =======================
@@ -169,6 +215,12 @@ public class CustomerOrderWithTimer : MonoBehaviour
 
         orderImage.sprite = sprite;
         orderImage.enabled = (sprite != null);
+
+        // 画像があるならテキストは非表示にして邪魔にならないようにする
+        if (orderText != null)
+        {
+            orderText.enabled = (sprite == null);
+        }
     }
 
     // =======================
@@ -226,9 +278,12 @@ public class CustomerOrderWithTimer : MonoBehaviour
             Destroy(fx, 2f);
         }
 
-        // 効果音
-        if (correctSound != null)
-            AudioSource.PlayClipAtPoint(correctSound, transform.position);
+        // 効果音（ランダム再生）
+        if (correctSounds != null && correctSounds.Length > 0)
+        {
+            var clip = correctSounds[Random.Range(0, correctSounds.Length)];
+            if(clip != null) AudioSource.PlayClipAtPoint(clip, transform.position);
+        }
 
         // アニメーション
         if (animator != null && !string.IsNullOrEmpty(correctTrigger))
@@ -259,8 +314,11 @@ public class CustomerOrderWithTimer : MonoBehaviour
         }
 
         // 効果音
-        if (wrongSound != null)
-            AudioSource.PlayClipAtPoint(wrongSound, transform.position);
+        if (wrongSounds != null && wrongSounds.Length > 0)
+        {
+            var clip = wrongSounds[Random.Range(0, wrongSounds.Length)];
+            if (clip != null) AudioSource.PlayClipAtPoint(clip, transform.position);
+        }
 
         // アニメーション
         if (animator != null && !string.IsNullOrEmpty(wrongTrigger))
@@ -291,9 +349,13 @@ public class CustomerOrderWithTimer : MonoBehaviour
             Destroy(fx, 2f);
         }
 
-        if (wrongSound != null)
-            AudioSource.PlayClipAtPoint(wrongSound, transform.position);
+        if (timeoutSounds != null && timeoutSounds.Length > 0)
+        {
+            var clip = timeoutSounds[Random.Range(0, timeoutSounds.Length)];
+            if (clip != null) AudioSource.PlayClipAtPoint(clip, transform.position);
+        }
 
+        // 時間切れは「がっかり」アニメーション（wrongTrigger）を流用、もし分けたければ変数追加可能
         if (animator != null && !string.IsNullOrEmpty(wrongTrigger))
             animator.SetTrigger(wrongTrigger);
 

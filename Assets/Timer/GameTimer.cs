@@ -10,6 +10,13 @@ public class GameTimer : MonoBehaviour
     public TextMeshProUGUI timerText;
     public string resultSceneName = "PCResult";
 
+    [Header("BGM Settings")]
+    public AudioClip mainBgm;
+    public AudioClip hurryUpBgm;
+    [Range(0f, 1f)]
+    public float bgmVolume = 0.5f; // 音量調整用
+    private AudioSource bgmSource;
+    private bool isHurryUpMode = false;
 
 
     float currentTime;
@@ -20,6 +27,18 @@ public class GameTimer : MonoBehaviour
     {
         currentTime = timeLimit;
 
+        // BGM初期化
+        bgmSource = GetComponent<AudioSource>();
+        if (bgmSource == null) bgmSource = gameObject.AddComponent<AudioSource>();
+        bgmSource.loop = true;
+        bgmSource.volume = bgmVolume; // 音量を適用
+
+        if (mainBgm != null)
+        {
+            bgmSource.clip = mainBgm;
+            bgmSource.Play();
+        }
+
         if (timerText != null) timerText.text = ""; 
         UpdateTimerUI(force: true);
     }
@@ -29,6 +48,17 @@ public class GameTimer : MonoBehaviour
         if (isFinished) return;
 
         currentTime -= Time.deltaTime;
+
+        // 残り30秒でBGM切り替え
+        if (!isHurryUpMode && currentTime <= 30f && currentTime > 0f)
+        {
+            isHurryUpMode = true;
+            if (hurryUpBgm != null && bgmSource != null)
+            {
+                StartCoroutine(SwitchBGM(hurryUpBgm));
+            }
+        }
+
         if (currentTime <= 0f)
         {
             currentTime = 0f;
@@ -56,5 +86,33 @@ public class GameTimer : MonoBehaviour
         int seconds = Mathf.FloorToInt(currentTime % 60f);
 
         timerText.text = $"{minutes:00}:{seconds:00}";
+    }
+
+    // BGMを滑らかに切り替えるコルーチン
+    IEnumerator SwitchBGM(AudioClip newClip)
+    {
+        float fadeTime = 2.0f; // 2秒かけて切り替え
+        float startVolume = bgmSource.volume;
+
+        // フェードアウト
+        for (float t = 0; t < fadeTime / 2; t += Time.deltaTime)
+        {
+            bgmSource.volume = Mathf.Lerp(startVolume, 0f, t / (fadeTime / 2));
+            yield return null;
+        }
+        bgmSource.volume = 0f;
+        bgmSource.Stop();
+
+        // クリップ変更
+        bgmSource.clip = newClip;
+        bgmSource.Play();
+
+        // フェードイン
+        for (float t = 0; t < fadeTime / 2; t += Time.deltaTime)
+        {
+            bgmSource.volume = Mathf.Lerp(0f, startVolume, t / (fadeTime / 2));
+            yield return null;
+        }
+        bgmSource.volume = startVolume;
     }
 }

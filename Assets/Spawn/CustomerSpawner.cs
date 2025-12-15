@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CustomerSpawner : MonoBehaviour
 {
     [Header("客のプレハブ")]
     public GameObject customerPrefab;
+
+    [Header("生成時の効果音")]
+    public AudioClip spawnSound;
 
     [Header("客のスポーン位置（入口など）")]
     public Transform spawnPoint;
@@ -14,14 +18,14 @@ public class CustomerSpawner : MonoBehaviour
     public SeatPoint[] seats;
 
     [Header("客の生成間隔（秒）")]
-    public float spawnInterval = 20f;   // 20秒ごとに生成
+    public float spawnInterval = 30f;   // 30秒ごとに生成
 
     [Header("Difficulty Settings")]
     public float minSpawnInterval = 5f;
     public float difficultyIncreaseInterval = 20f;
     public float difficultyDecreaseAmount = 1f;
 
-    private float timer = 0f;
+
 
     private void Start()
     {
@@ -30,7 +34,8 @@ public class CustomerSpawner : MonoBehaviour
 
     private void Update()
     {
-        // 難易度調整：時間経過で生成間隔を短くする
+        // 難易度調整：時間経過で生成間隔を短くする機能を停止（ずっと30秒間隔にするため）
+        /*
         timer += Time.deltaTime;
         if (timer >= difficultyIncreaseInterval)
         {
@@ -42,6 +47,7 @@ public class CustomerSpawner : MonoBehaviour
                 Debug.Log($"難易度アップ！生成間隔が {spawnInterval}秒 になりました");
             }
         }
+        */
     }
 
     /// <summary>
@@ -52,6 +58,7 @@ public class CustomerSpawner : MonoBehaviour
         while (true)
         {
             TrySpawnCustomer();
+            Debug.Log($"[CustomerSpawner] 次の生成まで {spawnInterval} 秒待機します...");
             yield return new WaitForSeconds(spawnInterval);
         }
     }
@@ -70,16 +77,51 @@ public class CustomerSpawner : MonoBehaviour
         }
 
         // 2) スポーン位置で客プレハブを生成
+        // NavMesh上の正しい位置を探す（空中に浮いたり埋まったりしないように）
+        Vector3 finalSpawnPos = spawnPoint.position;
+        NavMeshHit hit;
+        // 半径20m以内で一番近いNavMeshを探す（範囲を拡大）
+        if (NavMesh.SamplePosition(spawnPoint.position, out hit, 20.0f, NavMesh.AllAreas))
+        {
+            finalSpawnPos = hit.position;
+        }
+        else
+        {
+            Debug.LogError($"[CustomerSpawner] スポーン地点 ( {spawnPoint.position} ) の近く(20m以内)にNavMeshが見つかりません！床の上か、青いメッシュの近くに配置してください。");
+            return; // そもそも生成しない
+        }
+
         GameObject obj = Instantiate(
             customerPrefab,
-            spawnPoint.position,
+            finalSpawnPos,
             spawnPoint.rotation
         );
+
+        // 効果音再生
+        if (spawnSound != null)
+        {
+            AudioSource.PlayClipAtPoint(spawnSound, finalSpawnPos);
+        }
 
         // 3) 生成した客を目標の席に向かわせる（到着後に座る）
         CustomerSitting customer = obj.GetComponent<CustomerSitting>();
         if (customer != null)
         {
+            // NavMeshAgentを一旦Warpさせて確実にNavMeshに乗せる
+            NavMeshAgent agent = obj.GetComponent<NavMeshAgent>();
+            if (agent != null)
+            {
+                // エージェントを有効化する前に位置を強制補正
+                agent.Warp(finalSpawnPos);
+                
+                if (!agent.isOnNavMesh)
+                {
+                    Debug.LogError("致命的エラー: 生成した客がNavMeshに乗っていません。NavMeshをBakeしてください！");
+                    Destroy(obj);
+                    return;
+                }
+            }
+
             customer.GoToSeat(freeSeat);
         }
         else

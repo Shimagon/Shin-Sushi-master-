@@ -45,10 +45,7 @@ public class SushiThrowable : MonoBehaviour
     private float throwTime = 0f;
 
     // アタッチフラグ（SteamVR用）
-    private Hand.AttachmentFlags attachmentFlags =
-        Hand.AttachmentFlags.ParentToHand |
-        Hand.AttachmentFlags.DetachFromOtherHand |
-        Hand.AttachmentFlags.TurnOnKinematic;
+
 
     void Awake()
     {

@@ -3603,15 +3603,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.166
+      value: -1.33
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.71
+      value: 0.918
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.248
+      value: -1.56
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5058,6 +5058,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 0}
+  m_BuildHeightMesh: 0
 --- !u!1 &1259214704
 GameObject:
   m_ObjectHideFlags: 0
@@ -8298,7 +8317,7 @@ Transform:
   m_GameObject: {fileID: 919132149465761258}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.171, y: 0.622, z: -0.309}
+  m_LocalPosition: {x: -1.582, y: 0.622, z: -0.307}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8366,7 +8385,7 @@ Transform:
   m_GameObject: {fileID: 178345060854117585}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0015885673, y: 0.042755116, z: -0.037094858, w: 0.99839544}
-  m_LocalPosition: {x: -0.727, y: 0.649, z: -0.313}
+  m_LocalPosition: {x: -1.016, y: 0.649, z: -0.361}
   m_LocalScale: {x: 1.9016, y: 1.9016, z: 1.9016}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8516,7 +8535,7 @@ Transform:
   m_GameObject: {fileID: 1047271764915608373}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.609, y: 0.613, z: -0.287}
+  m_LocalPosition: {x: -0.566, y: 0.613, z: -0.239}
   m_LocalScale: {x: 0.31915006, y: 0.27015048, z: 0.36729765}
   m_ConstrainProportionsScale: 0
   m_Children:
