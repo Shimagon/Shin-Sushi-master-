@@ -34,6 +34,12 @@ public class SushiThrowable : MonoBehaviour
     [Tooltip("間違った寿司が当たったときのエフェクト")]
     public GameObject wrongHitEffect;
 
+    [Tooltip("間違った寿司が当たったときの「ブブー」効果音")] // 新規追加
+    public AudioClip wrongHitSound;
+
+    [Tooltip("お客さん以外（床や壁）に当たった時の「べちゃ」効果音")]
+    public AudioClip splatSound;
+
     [Tooltip("投げたときの効果音")]
     public AudioClip throwSound;
 
@@ -44,7 +50,7 @@ public class SushiThrowable : MonoBehaviour
     private bool hasHitTarget = false;
     private float throwTime = 0f;
 
-    // アタッチフラグ（SteamVR用）
+    private bool hasSplatted = false;
 
 
     void Awake()
@@ -98,6 +104,7 @@ public class SushiThrowable : MonoBehaviour
     {
         Debug.Log($"{sushiType}が{hand.name}に掴まれました");
         hasBeenThrown = false;
+        hasSplatted = false; // フラグをリセット
         throwTime = 0f;
 
         // 投げるための速度計測を開始
@@ -156,7 +163,6 @@ public class SushiThrowable : MonoBehaviour
         GameObject hitObject = collision.gameObject;
 
         // お客さんに当たったかチェック
-        // お客さんに当たったかチェック
         Customer customer = hitObject.GetComponent<Customer>();
         CustomerOrderWithTimer customerWithTimer = hitObject.GetComponent<CustomerOrderWithTimer>();
 
@@ -174,6 +180,23 @@ public class SushiThrowable : MonoBehaviour
         {
             // タグでもチェック
             OnHitCustomerSimple(hitObject, collision.contacts[0].point);
+        }
+        else if (hitObject.CompareTag("flooring") && !hasSplatted)
+        {
+            // 床に当たった場合（1回のみ再生）
+            hasSplatted = true;
+            PlaySplatSound(collision.contacts[0].point);
+        }
+    }
+
+    /// <summary>
+    /// 「べちゃ」音を再生
+    /// </summary>
+    private void PlaySplatSound(Vector3 position)
+    {
+        if (splatSound != null)
+        {
+            AudioSource.PlayClipAtPoint(splatSound, position);
         }
     }
 
@@ -200,7 +223,7 @@ public class SushiThrowable : MonoBehaviour
         }
 
         // スコアを追加
-        ScoreManager.Instance?.AddScore(earnedPoints);
+        // ScoreManager.Instance?.AddScore(earnedPoints);
 
         // お客さんに通知
         customer.ReceiveSushi(sushiType, isCorrectSushi);
@@ -235,7 +258,7 @@ public class SushiThrowable : MonoBehaviour
         }
 
         // スコアを追加
-        ScoreManager.Instance?.AddScore(earnedPoints);
+        // ScoreManager.Instance?.AddScore(earnedPoints);
 
         // お客さんに通知
         customer.ReceiveSushi(sushiType, isCorrectSushi);
@@ -279,6 +302,11 @@ public class SushiThrowable : MonoBehaviour
                 GameObject effect = Instantiate(hitEffect, position, Quaternion.identity);
                 Destroy(effect, 3f);
             }
+            // 正解音
+            if (hitSound != null)
+            {
+                AudioSource.PlayClipAtPoint(hitSound, position);
+            }
         }
         else
         {
@@ -287,12 +315,11 @@ public class SushiThrowable : MonoBehaviour
                 GameObject effect = Instantiate(wrongHitEffect, position, Quaternion.identity);
                 Destroy(effect, 3f);
             }
-        }
-
-        // 効果音
-        if (hitSound != null)
-        {
-            AudioSource.PlayClipAtPoint(hitSound, position);
+            // 間違い音（不正解音）
+            if (wrongHitSound != null)
+            {
+                AudioSource.PlayClipAtPoint(wrongHitSound, position);
+            }
         }
     }
 

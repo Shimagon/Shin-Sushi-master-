@@ -49,6 +49,14 @@ public class CustomerOrderWithTimer : MonoBehaviour
     public string correctTrigger = "Happy";
     public string wrongTrigger = "Sad";
 
+    [Header("スコア設定")]
+    [Tooltip("正解時の獲得スコア")]
+    public int correctScore = 100;
+    [Tooltip("不正解時の減点スコア（正の値で入力）")]
+    public int wrongScore = 10;
+    [Tooltip("タイムアウト時の減点スコア（正の値で入力）")]
+    public int timeoutScore = 10;
+
     void Start()
     {
         if (orderCanvas != null) orderCanvas.SetActive(false);
@@ -236,6 +244,10 @@ public class CustomerOrderWithTimer : MonoBehaviour
         if (animator != null && !string.IsNullOrEmpty(correctTrigger))
             animator.SetTrigger(correctTrigger);
 
+        // スコア加算
+        if (ScoreManager.Instance != null)
+            ScoreManager.Instance.AddScore(correctScore);
+
         StartCoroutine(StartNextOrderAfterDelay());
     }
 
@@ -255,6 +267,10 @@ public class CustomerOrderWithTimer : MonoBehaviour
 
         if (animator != null && !string.IsNullOrEmpty(wrongTrigger))
             animator.SetTrigger(wrongTrigger);
+
+        // スコア減点
+        if (ScoreManager.Instance != null)
+            ScoreManager.Instance.AddScore(-wrongScore);
     }
 
     // =======================
@@ -278,6 +294,10 @@ public class CustomerOrderWithTimer : MonoBehaviour
 
         if (animator != null && !string.IsNullOrEmpty(wrongTrigger))
             animator.SetTrigger(wrongTrigger);
+
+        // スコア減点
+        if (ScoreManager.Instance != null)
+            ScoreManager.Instance.AddScore(-timeoutScore);
 
         StartCoroutine(StartNextOrderAfterDelay());
     }

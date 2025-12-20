@@ -233,12 +233,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sushiType: Tamago
-  pointValue: 100
+  pointValue: 10
   throwMultiplier: 1.5
   autoDestroyTime: 10
   hitEffect: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 905fda5ea5911af46896f392fcde1834, type: 3}
   wrongHitEffect: {fileID: 6855314210357232287, guid: 7c2a9b83b809a0848915fabd9596b68b, type: 3}
+  wrongHitSound: {fileID: 0}
+  splatSound: {fileID: 8300000, guid: af7f4eee71ac8a8479dd896fd31e4f39, type: 3}
   throwSound: {fileID: 0}
 --- !u!114 &-4269811748551202244
 MonoBehaviour:

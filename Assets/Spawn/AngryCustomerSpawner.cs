@@ -9,8 +9,13 @@ public class AngryCustomerSpawner : MonoBehaviour
     [Header("スポーン地点（通常客と別）")]
     public Transform angrySpawnPoint;
 
-    [Header("怒る場所（到着後にTauntする地点）")]
-    public Transform angrySpot;
+    [Header("怒る場所（複数設定可）")]
+    public Transform[] angrySpots;       // ← 配列に変更
+
+    [Header("オーディオ")]
+    public AudioClip spawnSound;         // スポーン時の効果音
+
+
 
     [Header("スポーン設定")]
     [Tooltip("ゲーム開始から最初のスポーンまでの待機時間（秒）")]
@@ -72,9 +77,9 @@ public class AngryCustomerSpawner : MonoBehaviour
     public void SpawnAngryCustomer()
     {
         // 必要な参照が設定されているかチェック
-        if (angryCustomerPrefab == null || angrySpawnPoint == null || angrySpot == null)
+        if (angryCustomerPrefab == null || angrySpawnPoint == null)
         {
-            Debug.LogError("[AngryCustomerSpawner] Prefab / SpawnPoint / AngrySpot が設定されていません。");
+            Debug.LogError("[AngryCustomerSpawner] Prefab または SpawnPoint が設定されていません。");
             return;
         }
 
@@ -99,11 +104,27 @@ public class AngryCustomerSpawner : MonoBehaviour
             agent.Warp(spawnPos);
         }
 
+        // スポーン音を再生
+        if (spawnSound != null)
+        {
+            AudioSource.PlayClipAtPoint(spawnSound, spawnPos);
+        }
+
+
         // 怒った客に目的地（怒る場所）を設定
         AngryCustomer angry = obj.GetComponent<AngryCustomer>();
         if (angry != null)
         {
-            angry.angrySpot = angrySpot;
+            // 複数の候補からランダムに1つ選ぶ
+            if (angrySpots != null && angrySpots.Length > 0)
+            {
+                int randIndex = Random.Range(0, angrySpots.Length);
+                angry.angrySpot = angrySpots[randIndex];
+            }
+            else
+            {
+                 Debug.LogWarning("[AngryCustomerSpawner] AngrySpots が設定されていません。");
+            }
         }
     }
 

@@ -155,6 +155,8 @@ MonoBehaviour:
   wasabiTag: wasabi
   wasabiName: wasabi
   destroyDelay: 0.5
+  defeatSound: {fileID: 0}
+  ambienceSound: {fileID: 8300000, guid: 6b5099427f7e01d45bd96c73d5991792, type: 3}
 --- !u!95 &1534849551864865261
 Animator:
   serializedVersion: 5
