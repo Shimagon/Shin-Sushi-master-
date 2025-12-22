@@ -37,11 +37,11 @@ public class GameFlowManager : MonoBehaviour
     {
         if (playerSpawnPoint == null) return;
 
+        // 重複したプレイヤーを削除（DontDestroyOnLoadで残っている可能性）
+        RemoveDuplicatePlayers();
+
         // プレイヤー（CameraRig等）を探して移動
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player == null) player = GameObject.Find("Player");
-        if (player == null) player = GameObject.Find("[CameraRig]");
-        if (player == null) player = GameObject.Find("XR Origin");
+        GameObject player = FindPlayer();
 
         if (player != null)
         {
@@ -51,7 +51,56 @@ public class GameFlowManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Player found for Game Start Spawn!");
+            Debug.LogWarning("Player not found for Game Start Spawn!");
+        }
+    }
+
+    /// <summary>
+    /// プレイヤーオブジェクトを探す
+    /// </summary>
+    GameObject FindPlayer()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) player = GameObject.Find("Player");
+        if (player == null) player = GameObject.Find("[CameraRig]");
+        if (player == null) player = GameObject.Find("XR Origin");
+        return player;
+    }
+
+    /// <summary>
+    /// 重複したプレイヤーを削除（1つだけ残す）
+    /// </summary>
+    void RemoveDuplicatePlayers()
+    {
+        // すべてのプレイヤーを探す
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        // Tagで見つからない場合は名前で探す
+        if (players.Length == 0)
+        {
+            GameObject player1 = GameObject.Find("Player");
+            GameObject player2 = GameObject.Find("[CameraRig]");
+            GameObject player3 = GameObject.Find("XR Origin");
+
+            // 見つかったものをリストアップ
+            System.Collections.Generic.List<GameObject> foundPlayers = new System.Collections.Generic.List<GameObject>();
+            if (player1 != null) foundPlayers.Add(player1);
+            if (player2 != null) foundPlayers.Add(player2);
+            if (player3 != null) foundPlayers.Add(player3);
+
+            players = foundPlayers.ToArray();
+        }
+
+        // 2つ以上ある場合、最初の1つ以外を削除
+        if (players.Length > 1)
+        {
+            Debug.LogWarning($"Found {players.Length} players! Removing duplicates...");
+
+            for (int i = 1; i < players.Length; i++)
+            {
+                Debug.Log($"Destroying duplicate player: {players[i].name}");
+                Destroy(players[i]);
+            }
         }
     }
 

@@ -24,6 +24,10 @@ public class TitleManager : MonoBehaviour
     [Tooltip("遷移先のメインゲームシーン名")]
     public string mainGameSceneName = "SampleScene";
 
+    [Header("Spawn Settings")]
+    [Tooltip("タイトル画面でのプレイヤースポーン位置")]
+    public Transform playerSpawnPoint;
+
     private int currentIndex = 0; // 最初から1枚目を表示
 
     [Header("Audio")]
@@ -46,6 +50,9 @@ public class TitleManager : MonoBehaviour
 
     void Start()
     {
+        // プレイヤーをスポーン位置に移動
+        MovePlayerToSpawn();
+
         // 初期状態のセットアップ
         UpdateTutorialState();
 
@@ -57,6 +64,31 @@ public class TitleManager : MonoBehaviour
             audioSource.playOnAwake = true;
             audioSource.volume = 0.5f; // 適度な音量
             audioSource.Play();
+        }
+    }
+
+    /// <summary>
+    /// プレイヤーをスポーン位置に移動
+    /// </summary>
+    void MovePlayerToSpawn()
+    {
+        if (playerSpawnPoint == null) return;
+
+        // プレイヤー（CameraRig等）を探して移動
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) player = GameObject.Find("Player");
+        if (player == null) player = GameObject.Find("[CameraRig]");
+        if (player == null) player = GameObject.Find("XR Origin");
+
+        if (player != null)
+        {
+            player.transform.position = playerSpawnPoint.position;
+            player.transform.rotation = playerSpawnPoint.rotation;
+            Debug.Log($"Player moved to Title Spawn Point: {playerSpawnPoint.position}");
+        }
+        else
+        {
+            Debug.LogWarning("Player not found for Title Spawn!");
         }
     }
 

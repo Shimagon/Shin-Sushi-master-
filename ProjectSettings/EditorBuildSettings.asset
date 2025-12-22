@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/resulScene.unity
     guid: 711e6ffe0687ee04ca4aaaacf6248ea5
+  - enabled: 1
+    path: Assets/Scenes/SplashScene.unity
+    guid: ec94b44f66efda8408d8722e840e028d
   m_configObjects:
     Unity.XR.OpenVR.Settings: {fileID: 11400000, guid: e352ef9d9441d264bbdea8dedf037342, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 47d9e7819ccd21f4db2e182579e0fcc0, type: 2}

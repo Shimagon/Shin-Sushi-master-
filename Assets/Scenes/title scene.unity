@@ -3474,6 +3474,7 @@ MonoBehaviour:
   displayImage: {fileID: 734457917}
   tutorialSushi: {fileID: 8789805976937452030}
   mainGameSceneName: customerScene
+  playerSpawnPoint: {fileID: 0}
   titleBGM: {fileID: 0}
   startGameSound: {fileID: 0}
   quitConfirmationImage: {fileID: 21300000, guid: b7d75d03ee954de4aa0e30e90f0780a9, type: 3}
@@ -5944,7 +5945,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 88d0e45e892fb8e4e8e185cb70466b69, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.888
+      value: 0.083
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 88d0e45e892fb8e4e8e185cb70466b69, type: 3}
       propertyPath: m_LocalPosition.y
@@ -7706,11 +7707,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bde239d4791aff7418c39c79014591d9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.49
+      value: 1.567
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bde239d4791aff7418c39c79014591d9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.17
+      value: 3.801
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bde239d4791aff7418c39c79014591d9, type: 3}
       propertyPath: m_LocalPosition.z

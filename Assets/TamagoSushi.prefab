@@ -219,7 +219,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sushiTypeName: Tamago
   displayName: "\u305F\u307E\u3054"
-  scoreValue: 100
+  scoreValue: 10
 --- !u!114 &9022861838316726905
 MonoBehaviour:
   m_ObjectHideFlags: 0

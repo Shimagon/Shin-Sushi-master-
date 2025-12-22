@@ -25,7 +25,10 @@ public class ScoreManager : MonoBehaviour
 
     [Header("Score Logic")]
     [Tooltip("クレーマー1人あたりの毎秒減点数")]
-    public float penaltyPerCustomerPerSecond = 1.0f; // 変更可能にする
+    public float penaltyPerCustomerPerSecond = 10.0f; // 変更可能にする
+
+    [Tooltip("一度に減点する単位（この値が溜まるまで減点処理・音再生を行わない）")]
+    public float penaltyStep = 10.0f; // 10ポイント単位で減らす
 
     [Header("UI References")]
     [Tooltip("スコア表示用のテキスト")]
@@ -43,8 +46,8 @@ public class ScoreManager : MonoBehaviour
     public int rankA = 3000;
     public int rankB = 1000;
     public int rankC = 500;
-    // D is below C
-    // E is below 0 or specialized logic
+    public int rankD = 100; // デフォルト値
+    public int rankE = 0;   // デフォルト値
 
     [Header("UI Feedback")]
     [Tooltip("スコア増加時の色")]
@@ -102,6 +105,11 @@ public class ScoreManager : MonoBehaviour
         LoadHighScore();
     }
 
+    [Header("Recording Settings")]
+    public float recordInterval = 0.5f; // 0.5秒ごとに撮影
+    public int maxFrames = 50; // 最大枚数（約25秒分）
+    private bool isRecording = false;
+
     void Start()
     {
         if (scoreText != null)
@@ -109,6 +117,48 @@ public class ScoreManager : MonoBehaviour
             scoreText.color = defaultColor; // 初期色を設定
         }
         UpdateScoreUI();
+        
+        // 録画開始（シーン名チェックなどを入れても良いが、とりあえず開始）
+        StartRecording();
+    }
+
+    public void StartRecording()
+    {
+        if (!isRecording)
+        {
+            isRecording = true;
+            replayFrames.Clear();
+            StartCoroutine(RecordGameLoop());
+        }
+    }
+
+    public void StopRecording()
+    {
+        isRecording = false;
+        StopAllCoroutines(); // 録画などのコルーチンを止める
+    }
+
+    System.Collections.IEnumerator RecordGameLoop()
+    {
+        while (isRecording)
+        {
+            yield return new WaitForSeconds(recordInterval);
+            yield return new WaitForEndOfFrame();
+
+            // 画面キャプチャ（Texture2D作成）
+            Texture2D texture = ScreenCapture.CaptureScreenshotAsTexture();
+            
+            // リストに追加
+            replayFrames.Add(texture);
+
+            // 枚数制限を超えたら古いものを削除
+            if (replayFrames.Count > maxFrames)
+            {
+                Texture2D old = replayFrames[0];
+                replayFrames.RemoveAt(0);
+                Destroy(old); // メモリリーク防止
+            }
+        }
     }
 
     void Update()
@@ -122,12 +172,16 @@ public class ScoreManager : MonoBehaviour
             // 1人あたり毎秒設定ポイント分減らす
             scoreAccumulator += Time.deltaTime * activeAngryCustomerCount * penaltyPerCustomerPerSecond;
 
-            // 1ポイント以上溜まったら減点
-            if (scoreAccumulator >= 1.0f)
+            // ステップ値以上溜まったら減点（例：10ポイント溜まったら-10する）
+            if (scoreAccumulator >= penaltyStep)
             {
-                int reduceAmount = Mathf.FloorToInt(scoreAccumulator);
-                AddScore(-reduceAmount); // 減点実行
-                scoreAccumulator -= reduceAmount; // 減らした分を引く
+                int step = Mathf.FloorToInt(penaltyStep);
+                // もしpenaltyStepが1未満の設定なら1にするなどのガードがあってもいいが、
+                // 今回は10なのでそのまま
+                if (step < 1) step = 1; 
+
+                AddScore(-step); // 減点実行
+                scoreAccumulator -= step; // 減らした分を引く
             }
         }
     }

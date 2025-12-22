@@ -246,7 +246,13 @@ public class CustomerOrderWithTimer : MonoBehaviour
 
         // スコア加算
         if (ScoreManager.Instance != null)
+        {
             ScoreManager.Instance.AddScore(correctScore);
+            ScoreManager.Instance.servedCount++; // 提供成功数
+            
+            float duration = timeLimit - remainingTime;
+            ScoreManager.Instance.totalServiceTime += duration; // かかった時間
+        }
 
         StartCoroutine(StartNextOrderAfterDelay());
     }
@@ -270,7 +276,10 @@ public class CustomerOrderWithTimer : MonoBehaviour
 
         // スコア減点
         if (ScoreManager.Instance != null)
+        {
             ScoreManager.Instance.AddScore(-wrongScore);
+            ScoreManager.Instance.wrongCount++; // ミス数
+        }
     }
 
     // =======================
@@ -295,9 +304,11 @@ public class CustomerOrderWithTimer : MonoBehaviour
         if (animator != null && !string.IsNullOrEmpty(wrongTrigger))
             animator.SetTrigger(wrongTrigger);
 
-        // スコア減点
         if (ScoreManager.Instance != null)
+        {
             ScoreManager.Instance.AddScore(-timeoutScore);
+            ScoreManager.Instance.missedCount++; // 提供失敗数
+        }
 
         StartCoroutine(StartNextOrderAfterDelay());
     }
