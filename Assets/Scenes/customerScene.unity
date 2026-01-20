@@ -19095,12 +19095,12 @@ MonoBehaviour:
   scoreText: {fileID: 906561814}
   highScoreText: {fileID: 0}
   replayFrames: []
-  rankS: 3000
-  rankA: 2500
-  rankB: 2000
-  rankC: 1500
-  rankD: 1250
-  rankE: 1000
+  rankS: 1000
+  rankA: 500
+  rankB: 200
+  rankC: -200
+  rankD: -500
+  rankE: -1000
   positiveColor: {r: 0, g: 1, b: 0, a: 1}
   negativeColor: {r: 1, g: 0, b: 0, a: 1}
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
@@ -25890,6 +25890,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 924759573590916038, guid: 5e3edbb3be7091548b77f006b599d9a3, type: 3}
+      propertyPath: m_Height
+      value: 2.8210657
+      objectReference: {fileID: 0}
+    - target: {fileID: 924759573590916038, guid: 5e3edbb3be7091548b77f006b599d9a3, type: 3}
+      propertyPath: m_Center.y
+      value: 0.9105326
+      objectReference: {fileID: 0}
+    - target: {fileID: 924759573590916038, guid: 5e3edbb3be7091548b77f006b599d9a3, type: 3}
+      propertyPath: m_Center.z
+      value: -0
+      objectReference: {fileID: 0}
     - target: {fileID: 5526402852899837343, guid: 5e3edbb3be7091548b77f006b599d9a3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.041
@@ -26015,6 +26027,14 @@ PrefabInstance:
     - target: {fileID: 1857915372513309369, guid: 19bb889acc9bd0b44ae5b1a2e4d8b11a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052674929074904079, guid: 19bb889acc9bd0b44ae5b1a2e4d8b11a, type: 3}
+      propertyPath: m_Height
+      value: 2.09193
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052674929074904079, guid: 19bb889acc9bd0b44ae5b1a2e4d8b11a, type: 3}
+      propertyPath: m_Center.y
+      value: 0.5459647
       objectReference: {fileID: 0}
     - target: {fileID: 3990623676402465871, guid: 19bb889acc9bd0b44ae5b1a2e4d8b11a, type: 3}
       propertyPath: correctScore
@@ -26233,6 +26253,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3190960048597547246, guid: 02a1aa4304ad3e8438f7c52af1e153ff, type: 3}
+      propertyPath: m_Height
+      value: 2.0217018
+      objectReference: {fileID: 0}
+    - target: {fileID: 3190960048597547246, guid: 02a1aa4304ad3e8438f7c52af1e153ff, type: 3}
+      propertyPath: m_Center.y
+      value: 0.51085067
+      objectReference: {fileID: 0}
     - target: {fileID: 3439171796921334022, guid: 02a1aa4304ad3e8438f7c52af1e153ff, type: 3}
       propertyPath: correctScore
       value: 10
@@ -26258,6 +26286,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2210188379390583581, guid: 7dfb4fd37a0087d48892ef73963a508e, type: 3}
+      propertyPath: m_Height
+      value: 2.1092124
+      objectReference: {fileID: 0}
+    - target: {fileID: 2210188379390583581, guid: 7dfb4fd37a0087d48892ef73963a508e, type: 3}
+      propertyPath: m_Center.y
+      value: 0.55460596
+      objectReference: {fileID: 0}
     - target: {fileID: 3947047891101909772, guid: 7dfb4fd37a0087d48892ef73963a508e, type: 3}
       propertyPath: m_Name
       value: Customer_3
